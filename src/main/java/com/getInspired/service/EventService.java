@@ -18,25 +18,25 @@ public class EventService {
 
     private final EventRepository eventRepository;
 
-    public List<Event> getAll() {
+    public List<Event> getAllEvent() {
         List<Event> events = eventRepository.findAll();
         if (events.isEmpty()) {
             throw new DatabaseEmptyException();
         }
         return events;
     }
-    public Event save(Event event) {
+    public Event saveEvent(Event event) {
         return eventRepository.save(event);
     }
 
-    public Event update(Event event) {
+    public Event updateEvent(Event event) {
         return eventRepository.save(event);
     }
 
-    public Event getById(Long id) throws EventNotFoundException {
+    public Event getByIdEvent(Long id) throws EventNotFoundException {
         return eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
     }
-    public Event delete(Long id) throws EventNotFoundException {
+    public Event deleteEvent(Long id) throws EventNotFoundException {
         Event event = eventRepository.findById(id).orElseThrow(EventNotFoundException::new);
         eventRepository.delete(event);
         return event;

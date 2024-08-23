@@ -16,7 +16,7 @@ import java.util.List;
 public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
 
-    public List<Subscription> getAll() {
+    public List<Subscription> getAllSubscriptions() {
         List<Subscription> subscriptions = subscriptionRepository.findAll();
         if (subscriptions.isEmpty()) {
             throw new DatabaseEmptyException();
@@ -24,7 +24,7 @@ public class SubscriptionService {
         return subscriptions;
     }
 
-    public Subscription save(Subscription subscription) {
+    public Subscription saveSubscription(Subscription subscription) {
         return subscriptionRepository.save(subscription);
     }
 

@@ -17,30 +17,31 @@ public class SpaceService {
 
     private final SpaceRepository spaceRepository;
 
-    public List<Space> getAll() {
+    public List<Space> getAllSpaces() {
         List<Space> spaces = spaceRepository.findAll();
         if (spaces.isEmpty()) {
             throw new DatabaseEmptyException();
         }
         return spaces;
     }
-    public Space save(Space space) {
+    public Space saveSpace(Space space) {
         return spaceRepository.save(space);
     }
 
-    public Space update(Space space) {
+    public Space updateSpace(Space space) {
         return spaceRepository.save(space);
     }
 
-    public Space getById(Long id) throws SpaceNotFoundException {
+    public Space getByIdSpace(Long id) throws SpaceNotFoundException {
         return spaceRepository.findById(id).orElseThrow(SpaceNotFoundException::new);
     }
-    public Space delete(Long id) throws SpaceNotFoundException {
+    public Space deleteSpace(Long id) throws SpaceNotFoundException {
         Space space = spaceRepository.findById(id).orElseThrow(SpaceNotFoundException::new);
         spaceRepository.delete(space);
         return space;
     }
-    public Space reserverdEtat(Space space) {
+    public Space changeEtatToReserved(Long id) {
+        Space space = spaceRepository.findById(id).orElseThrow(SpaceNotFoundException::new);
         space.setIsReserved(true);
         return spaceRepository.save(space);
     }

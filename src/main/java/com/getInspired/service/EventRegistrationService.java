@@ -15,7 +15,7 @@ import java.util.List;
 public class EventRegistrationService {
     private final EventRegistrationRepository eventRegistrationRepository;
 
-    public List<EventRegistration> getAll() {
+    public List<EventRegistration> getAllRegistration() {
         List<EventRegistration> eventRegistrations = eventRegistrationRepository.findAll();
         if (eventRegistrations.isEmpty()) {
             throw new DatabaseEmptyException();
@@ -23,7 +23,7 @@ public class EventRegistrationService {
         return eventRegistrations;
     }
 
-    public EventRegistration save(EventRegistration eventRegistration) {
+    public EventRegistration saveEventRegistration(EventRegistration eventRegistration) {
         return eventRegistrationRepository.save(eventRegistration);
     }
 

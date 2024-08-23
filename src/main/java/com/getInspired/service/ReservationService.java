@@ -17,7 +17,7 @@ import java.util.Optional;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
 
-    public List<Reservation> getAll() {
+    public List<Reservation> getAllReservation() {
         List<Reservation> reservations = reservationRepository.findAll();
         if (reservations.isEmpty()) {
             throw new DatabaseEmptyException();
@@ -25,7 +25,7 @@ public class ReservationService {
         return reservations;
     }
 
-    public Reservation save(Reservation reservation) {
+    public Reservation saveReservation(Reservation reservation) {
         return reservationRepository.save(reservation);
     }
 

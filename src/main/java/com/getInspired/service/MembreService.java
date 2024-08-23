@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MembreService {
     private final MembreRepository membreRepository;
 
-    public Membre save(Membre membre)
+    public Membre saveMembre(Membre membre)
     {
         return membreRepository.save(membre);
     }

@@ -13,7 +13,7 @@ public class AdminService {
 
     private final AdminRepository adminRepository;
 
-    public Admin save(Admin admin)
+    public Admin saveAdmin(Admin admin)
     {
         return adminRepository.save(admin);
     }
