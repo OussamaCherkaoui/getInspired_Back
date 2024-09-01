@@ -62,8 +62,14 @@ public class SpaceController {
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/reserve/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id ){
+    public ResponseEntity<?> changeEtatToReserved(@PathVariable Long id ){
         return ResponseEntity.status(HttpStatus.OK).body(spaceService.changeEtatToReserved(id));
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/notReserve/{id}")
+    public ResponseEntity<?> changeEtatToNotReserved(@PathVariable Long id ){
+        return ResponseEntity.status(HttpStatus.OK).body(spaceService.changeEtatToNotReserved(id));
     }
 
 

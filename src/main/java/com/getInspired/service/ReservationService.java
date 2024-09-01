@@ -41,4 +41,12 @@ public class ReservationService {
         reservation.setIsConfirmed(true);
         return reservationRepository.save(reservation);
     }
+
+    public List<Reservation> getAllReservationByIdSpace(Long id) {
+        List<Reservation> reservations = reservationRepository.findBySpace_Id(id);
+        if (reservations.isEmpty()) {
+            throw new DatabaseEmptyException();
+        }
+        return reservations;
+    }
 }

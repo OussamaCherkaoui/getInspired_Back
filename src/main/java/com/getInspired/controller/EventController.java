@@ -32,8 +32,8 @@ public class EventController {
     }
 
     @PreAuthorize("hasAnyAuthority('ADMIN','MEMBRE')")
-    @GetMapping("/getById")
-    public ResponseEntity<?> getById(Long id){
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id){
         try {
             Event event = eventService.getByIdEvent(id);
             return ResponseEntity.ok(event);

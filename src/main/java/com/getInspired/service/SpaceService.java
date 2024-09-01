@@ -45,4 +45,10 @@ public class SpaceService {
         space.setIsReserved(true);
         return spaceRepository.save(space);
     }
+
+    public Space changeEtatToNotReserved(Long id) {
+        Space space = spaceRepository.findById(id).orElseThrow(SpaceNotFoundException::new);
+        space.setIsReserved(false);
+        return spaceRepository.save(space);
+    }
 }

@@ -28,6 +28,16 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllByIdSpace/{id}")
+    public ResponseEntity<?> getAllByIdSpace(@PathVariable Long id) {
+        try {
+            List<Reservation> reservations = reservationService.getAllReservationByIdSpace(id);
+            return ResponseEntity.ok(reservations);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
     @PreAuthorize("hasAuthority('MEMBRE')")
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody Reservation reservation ){

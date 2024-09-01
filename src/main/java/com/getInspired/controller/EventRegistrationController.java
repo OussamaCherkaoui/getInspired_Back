@@ -31,6 +31,17 @@ public class EventRegistrationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllEventRegistrationByIdEvent/{id}")
+    public ResponseEntity<?> getAllEventRegistrationByIdEvent(@PathVariable Long id) {
+        try {
+            List<EventRegistration> eventRegistrations = eventRegistrationService.getAllEventRegistrationByIdEvent(id);
+            return ResponseEntity.ok(eventRegistrations);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @PreAuthorize("hasAuthority('MEMBRE')")
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody EventRegistration eventRegistration ){

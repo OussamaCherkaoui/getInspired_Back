@@ -19,7 +19,6 @@ public class MembreController{
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody Membre membre) {
-        membre.setRole(Role.MEMBRE);
         membre.setPassword(passwordEncoder.encode(membre.getPassword()));
         return new ResponseEntity<>(membreService.saveMembre(membre), HttpStatus.CREATED);
     }

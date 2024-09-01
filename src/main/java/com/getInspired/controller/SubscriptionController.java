@@ -35,6 +35,11 @@ public class SubscriptionController {
     public ResponseEntity<?> save(@RequestBody Subscription subscription ){
         return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionService.saveSubscription(subscription));
     }
+    @PreAuthorize("hasAuthority('MEMBRE')")
+    @PutMapping("/renewal")
+    public ResponseEntity<?> renewal(@RequestBody Subscription subscription ){
+        return ResponseEntity.status(HttpStatus.OK).body(subscriptionService.saveSubscription(subscription));
+    }
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/sendNotification/{id}/{notification}")
     public ResponseEntity<?> sendNotification(@PathVariable Long id,@PathVariable String notification){

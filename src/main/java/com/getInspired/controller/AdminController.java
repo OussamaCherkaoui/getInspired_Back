@@ -20,7 +20,6 @@ public class AdminController{
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody Admin admin) {
-        admin.setRole(Role.ADMIN);
         admin.setPassword(passwordEncoder.encode(admin.getPassword()));
         return new ResponseEntity<>(adminService.saveAdmin(admin), HttpStatus.CREATED);
     }

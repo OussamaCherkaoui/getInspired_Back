@@ -34,4 +34,11 @@ public class EventRegistrationService {
     }
 
 
+    public List<EventRegistration> getAllEventRegistrationByIdEvent(Long id) {
+        List<EventRegistration> eventRegistrations = eventRegistrationRepository.findByEvent_Id(id);
+        if (eventRegistrations.isEmpty()) {
+            throw new DatabaseEmptyException();
+        }
+        return eventRegistrations;
+    }
 }

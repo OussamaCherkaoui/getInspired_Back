@@ -18,9 +18,9 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Inheritance(strategy= InheritanceType.JOINED)
+@Inheritance(strategy=InheritanceType.JOINED)
 @DiscriminatorColumn(name = "role")
-public class User implements UserDetails {
+public abstract class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,16 +46,7 @@ public class User implements UserDetails {
 
         return List.of(new SimpleGrantedAuthority(role.name()));
     }
-
-    @Override
-    public String getPassword() {
-        return "";
-    }
-
-    @Override
-    public String getUsername() {
-        return "";
-    }
+    
 
     @Override
     public boolean isAccountNonExpired() {
