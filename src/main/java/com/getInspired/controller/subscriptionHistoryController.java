@@ -1,6 +1,7 @@
 package com.getInspired.controller;
 
 import com.getInspired.exception.DatabaseEmptyException;
+import com.getInspired.mapper.SubscriptionHistoryMapper;
 import com.getInspired.model.Subscription;
 import com.getInspired.model.SubscriptionHistory;
 import com.getInspired.service.SubscriptionHistoryService;
@@ -20,13 +21,14 @@ import java.util.List;
 public class subscriptionHistoryController{
 
     private final SubscriptionHistoryService subscriptionHistoryService;
+    private final SubscriptionHistoryMapper subscriptionHistoryMapper;
 
     @PreAuthorize("hasAnyAuthority('ADMIN','MEMBRE')")
     @GetMapping("/getSubscriptionHistoryByIdMembre/{id}")
     public ResponseEntity<?> getAll(@PathVariable Long id) {
         try {
             List<SubscriptionHistory> subscriptionHistories = subscriptionHistoryService.getAllSubscriptionHistoryByIdMembre(id);
-            return ResponseEntity.ok(subscriptionHistories);
+            return ResponseEntity.ok(subscriptionHistoryMapper.toDTO(subscriptionHistories));
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

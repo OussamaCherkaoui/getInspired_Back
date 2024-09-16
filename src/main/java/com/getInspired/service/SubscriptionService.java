@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -27,13 +28,17 @@ public class SubscriptionService {
     }
 
     public Subscription saveSubscription(Subscription subscription) {
+        Optional<Subscription> subscriptionMember = subscriptionRepository.findByMembre_Id(subscription.getMembre().getId());
+        Subscription subscriptionSaved=new Subscription();
+        subscriptionMember.ifPresent(value -> subscription.setId(value.getId()));
+        subscriptionSaved = subscriptionRepository.save(subscription);
         SubscriptionHistory subscriptionHistory = new SubscriptionHistory();
-        subscriptionHistory.setSubscription(subscription);
+        subscriptionHistory.setSubscription(subscriptionSaved);
         subscriptionHistory.setType(subscription.getType());
         subscriptionHistory.setStart_date(subscription.getStart_date());
         subscriptionHistory.setEnd_date(subscription.getEnd_date());
         subscriptionHistoryService.saveSubscriptionHistory(subscriptionHistory);
-        return subscriptionRepository.save(subscription);
+        return subscriptionSaved;
     }
 
 

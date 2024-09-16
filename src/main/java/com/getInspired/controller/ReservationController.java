@@ -1,6 +1,8 @@
 package com.getInspired.controller;
 
+import com.getInspired.dto.ReservationDto;
 import com.getInspired.exception.DatabaseEmptyException;
+import com.getInspired.mapper.ReservationMapper;
 import com.getInspired.model.EventRegistration;
 import com.getInspired.model.Reservation;
 import com.getInspired.service.ReservationService;
@@ -18,12 +20,14 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class ReservationController {
     private final ReservationService reservationService;
+    private final ReservationMapper reservationMapper;
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/getAll")
     public ResponseEntity<?> getAll() {
         try {
             List<Reservation> reservations = reservationService.getAllReservation();
-            return ResponseEntity.ok(reservations);
+            return ResponseEntity.ok(reservationMapper.toDTO(reservations));
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -33,25 +37,25 @@ public class ReservationController {
     public ResponseEntity<?> getAllByIdSpace(@PathVariable Long id) {
         try {
             List<Reservation> reservations = reservationService.getAllReservationByIdSpace(id);
-            return ResponseEntity.ok(reservations);
+            return ResponseEntity.ok(reservationMapper.toDTO(reservations));
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
     @PreAuthorize("hasAuthority('MEMBRE')")
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Reservation reservation ){
-        return ResponseEntity.status(HttpStatus.CREATED).body(reservationService.saveReservation(reservation));
+    public ResponseEntity<?> save(@RequestBody ReservationDto reservationDto ){
+        return ResponseEntity.status(HttpStatus.CREATED).body(reservationMapper.toDTO(reservationService.saveReservation(reservationMapper.toEntity(reservationDto))));
     }
     @PreAuthorize("hasAuthority('MEMBRE')")
     @DeleteMapping("/cancelReservation/{id}")
     public ResponseEntity<?> cancelReservation(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(reservationService.cancelReservation(id));
+        return ResponseEntity.status(HttpStatus.OK).body(reservationMapper.toDTO(reservationService.cancelReservation(id)));
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/confirmReservation/{id}")
     public ResponseEntity<?> confirmReservation(@PathVariable Long id){
-        return ResponseEntity.status(HttpStatus.OK).body(reservationService.confirmReservation(id));
+        return ResponseEntity.status(HttpStatus.OK).body(reservationMapper.toDTO(reservationService.confirmReservation(id)));
     }
 
 }

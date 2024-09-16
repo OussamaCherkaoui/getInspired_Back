@@ -1,7 +1,9 @@
 package com.getInspired.controller;
 
+import com.getInspired.dto.SpaceDto;
 import com.getInspired.exception.DatabaseEmptyException;
 import com.getInspired.exception.EventNotFoundException;
+import com.getInspired.mapper.SpaceMapper;
 import com.getInspired.model.Event;
 import com.getInspired.model.Space;
 import com.getInspired.service.EventService;
@@ -20,12 +22,14 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class SpaceController {
     private final SpaceService spaceService;
+    private final SpaceMapper spaceMapper;
+
     @PreAuthorize("hasAnyAuthority('ADMIN','MEMBRE')")
     @GetMapping("/getAll")
     public ResponseEntity<?> getAll() {
         try {
             List<Space> spaces = spaceService.getAllSpaces();
-            return ResponseEntity.ok(spaces);
+            return ResponseEntity.ok(spaceMapper.toDTO(spaces));
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -35,27 +39,27 @@ public class SpaceController {
     public ResponseEntity<?> getById(Long id){
         try {
             Space space = spaceService.getByIdSpace(id);
-            return ResponseEntity.ok(space);
+            return ResponseEntity.ok(spaceMapper.toDTO(space));
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Space space ){
-        return ResponseEntity.status(HttpStatus.CREATED).body(spaceService.saveSpace(space));
+    public ResponseEntity<?> save(@RequestBody SpaceDto spaceDto ){
+        return ResponseEntity.status(HttpStatus.CREATED).body(spaceMapper.toDTO(spaceService.saveSpace(spaceMapper.toEntity(spaceDto))));
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/update")
-    public ResponseEntity<?> update(@RequestBody Space space ){
-        return ResponseEntity.status(HttpStatus.OK).body(spaceService.updateSpace(space));
+    public ResponseEntity<?> update(@RequestBody SpaceDto spaceDto ){
+        return ResponseEntity.status(HttpStatus.OK).body(spaceMapper.toDTO(spaceService.updateSpace(spaceMapper.toEntity(spaceDto))));
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         try {
             Space deletedSpace = spaceService.deleteSpace(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(deletedSpace);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(spaceMapper.toDTO(deletedSpace));
         } catch (EventNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -63,15 +67,13 @@ public class SpaceController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/reserve/{id}")
     public ResponseEntity<?> changeEtatToReserved(@PathVariable Long id ){
-        return ResponseEntity.status(HttpStatus.OK).body(spaceService.changeEtatToReserved(id));
+        return ResponseEntity.status(HttpStatus.OK).body(spaceMapper.toDTO(spaceService.changeEtatToReserved(id)));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/notReserve/{id}")
     public ResponseEntity<?> changeEtatToNotReserved(@PathVariable Long id ){
-        return ResponseEntity.status(HttpStatus.OK).body(spaceService.changeEtatToNotReserved(id));
+        return ResponseEntity.status(HttpStatus.OK).body(spaceMapper.toDTO(spaceService.changeEtatToNotReserved(id)));
     }
-
-
 
 }

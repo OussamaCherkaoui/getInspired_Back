@@ -1,8 +1,10 @@
 package com.getInspired.controller;
 
 
+import com.getInspired.dto.EventDto;
 import com.getInspired.exception.DatabaseEmptyException;
 import com.getInspired.exception.EventNotFoundException;
+import com.getInspired.mapper.EventMapper;
 import com.getInspired.model.Event;
 import com.getInspired.service.EventService;
 import lombok.RequiredArgsConstructor;
@@ -19,13 +21,12 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class EventController {
     private final EventService eventService;
-
-    @PreAuthorize("hasAnyAuthority('ADMIN','MEMBRE')")
+    private final EventMapper eventMapper;
     @GetMapping("/getAll")
     public ResponseEntity<?> getAll() {
         try {
             List<Event> events = eventService.getAllEvent();
-            return ResponseEntity.ok(events);
+            return ResponseEntity.ok(eventMapper.toDTO(events));
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -36,26 +37,26 @@ public class EventController {
     public ResponseEntity<?> getById(@PathVariable Long id){
         try {
             Event event = eventService.getByIdEvent(id);
-            return ResponseEntity.ok(event);
+            return ResponseEntity.ok(eventMapper.toDTO(event));
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/save")
-    public ResponseEntity<?> save(@RequestBody Event event ){
-        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.saveEvent(event));
+    public ResponseEntity<?> save(@RequestBody EventDto eventDto ){
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventMapper.toDTO(eventService.saveEvent(eventMapper.toEntity(eventDto))));
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> update(@RequestBody Event event ){
-        return ResponseEntity.status(HttpStatus.OK).body(eventService.updateEvent(event));
+    public ResponseEntity<?> update(@RequestBody EventDto eventDto ){
+        return ResponseEntity.status(HttpStatus.OK).body(eventMapper.toDTO(eventService.updateEvent(eventMapper.toEntity(eventDto))));
     }
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Long id) {
         try {
             Event deletedEvent = eventService.deleteEvent(id);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(deletedEvent);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(eventMapper.toDTO(deletedEvent));
         } catch (EventNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
