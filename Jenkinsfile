@@ -7,8 +7,8 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('docker-hub')
-        SONARQUBE_TOKEN = 'sqa_ecbba8e99c5fa360647d54402d82722605ddab4e'
-        SONARQUBE_SERVER = 'http://localhost:9000'
+        SONARQUBE_TOKEN = 'my-key'
+        SONARQUBE_SERVER = 'SonarQubeServer'
     }
 
     stages {
