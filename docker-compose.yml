@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  getinspired:
+    image: ./oussamacherkaoui/getinspired
+    ports:
+      - "8081:8081"
+    networks:
+      - getinspired-network
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://getinspired-db:3306/GetInspired_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD:
+    depends_on:
+      - getinspired-db
+
+  getinspired-db:
+    image: mysql:8
+    environment:
+      MYSQL_DATABASE: getinspired-db
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - "3306:3306"
+    networks:
+      - getinspired-network
+
+
+networks:
+  getinspired-network:
+    driver: bridge
