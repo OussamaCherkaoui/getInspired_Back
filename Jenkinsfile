@@ -29,26 +29,50 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 script {
-                    def scannerHome = tool 'SonarQube'
-                    bat "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=GetInspired -Dsonar.sources=. -Dsonar.host.url=${SONARQUBE_SERVER} -Dsonar.login=${SONARQUBE_TOKEN} -Dsonar.java.binaries=target/classes"
+                        withSonarQubeEnv(SONARQUBE_SERVER) {
+                                        bat "mvn sonar:sonar -Dsonar.token=${SONARQUBE_TOKEN}"
+                        }
                 }
             }
         }
 
-        stage('Build Docker Images & Push') {
+        stage('Build Docker Images') {
+                    steps {
+                        script {
+                                bat "docker build -t getinspired ."
+                        }
+                    }
+        }
+
+//        stage('Quality Gate Check') {
+//                    steps {
+//                        timeout(time: 5, unit: 'MINUTES') {
+//                            waitForQualityGate abortPipeline: true
+//                        }
+//                    }
+//        }
+
+        stage('Tag and Push Docker Images') {
+                    steps {
+                        script {
+                            docker.withRegistry(credentialsId: 'docker-hub', toolName: 'Docker', url: 'oussamacherkaoui/getinspired') {
+                                    def imageName = "oussamacherkaoui/getinspired:getInspired"
+                                    bat """
+                                        docker tag getinspired:latest ${imageName}
+                                        docker push ${imageName}
+                                    """
+                            }
+                        }
+                    }
+        }
+
+        stage('Run Docker Compose') {
             steps {
                 script {
-                    def dockerImage = docker.build("oussamacherkaoui/getinspired:${env.TAG_VERSION ?: 'latest'}")
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-hub') {
-                        dockerImage.push()
+                    dir('getInspired') {
+                        bat 'docker-compose up -d'
                     }
                 }
-            }
-        }
-
-        stage('Deploy with Docker Compose') {
-            steps {
-                bat 'docker-compose up'
             }
         }
     }
