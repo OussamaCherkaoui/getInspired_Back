@@ -1,7 +1,7 @@
-version: '3.8'
+version: '4.0'
 services:
   getinspired:
-    image: oussamacherkaoui/getinspired:latest
+    image: oussamacherkaoui/getinspired:getInspired
     ports:
       - "8081:8081"
     networks:
