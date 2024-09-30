@@ -55,7 +55,7 @@ pipeline {
         stage('Tag and Push Docker Images') {
                     steps {
                         script {
-                            docker.withRegistry(credentialsId: 'docker-hub', toolName: 'Docker', url: 'oussamacherkaoui/getinspired') {
+                            docker.withRegistry('https://index.docker.io/v1/','docker-hub') {
                                     def imageName = "oussamacherkaoui/getinspired:getInspired"
                                     bat """
                                         docker tag getinspired:latest ${imageName}
