@@ -7,10 +7,11 @@ services:
     networks:
       - getinspired-network
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3308/GetInspired_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_URL: jdbc:mysql://getinspired-db:3306/GetInspired_db?createDatabaseIfNotExist=true
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD:
-
+    depends_on:
+      - getinspired-db
 
   getinspired-db:
     image: mysql:8
