@@ -70,7 +70,7 @@ pipeline {
             steps {
                 script {
                     dir('getInspired') {
-                        bat 'docker-compose up -d'
+                        bat 'docker-compose up -d getinspired'
                     }
                 }
             }
