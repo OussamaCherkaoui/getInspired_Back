@@ -14,9 +14,10 @@ services:
       - getinspired-db
 
   getinspired-db:
+    container_name: getinspired-db
     image: mysql:8
     environment:
-      MYSQL_DATABASE: getinspired-db
+      MYSQL_DATABASE: GetInspired_db
       MYSQL_ROOT_PASSWORD:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
