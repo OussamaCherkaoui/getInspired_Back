@@ -33,4 +33,15 @@ public class subscriptionHistoryController{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    @PreAuthorize("hasAnyAuthority('ADMIN','MEMBRE')")
+    @GetMapping("/getSubscriptionHistoryByIdSubscription/{id}")
+    public ResponseEntity<?> getSubscriptionHistoryByIdSubscription(@PathVariable Long id) {
+        try {
+            List<SubscriptionHistory> subscriptionHistories = subscriptionHistoryService.getAllSubscriptionHistoryByIdSubscription(id);
+            return ResponseEntity.ok(subscriptionHistoryMapper.toDTO(subscriptionHistories));
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
 }

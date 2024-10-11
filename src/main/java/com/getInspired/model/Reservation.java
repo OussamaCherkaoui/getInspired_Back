@@ -18,10 +18,10 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
-    private LocalDateTime start_time;
-    @Column
-    private LocalDateTime end_time;
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
     @Column
     private Boolean isConfirmed;
     @ManyToOne

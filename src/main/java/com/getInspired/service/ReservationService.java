@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,15 +27,35 @@ public class ReservationService {
         }
         return reservations;
     }
+    public List<Reservation> getAllReservationByDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+        LocalDateTime startOfDay = localDate.atStartOfDay();
+
+        LocalDateTime endOfDay = localDate.atTime(23, 59, 59);
+
+        List<Reservation> reservations = reservationRepository.findByStartTimeBetween(startOfDay,endOfDay);
+        if (reservations.isEmpty()) {
+            throw new DatabaseEmptyException();
+        }
+        return reservations;
+    }
+    public List<Reservation> UpcomingReservations() {
+        List<Reservation> reservations = reservationRepository.UpcomingReservations();
+        if (reservations.isEmpty()) {
+            throw new DatabaseEmptyException();
+        }
+        return reservations;
+    }
 
     public Reservation saveReservation(Reservation reservation) {
         return reservationRepository.save(reservation);
     }
 
     public Reservation cancelReservation(Long id){
-        Optional<Reservation> reservation = reservationRepository.findById(id);
-        reservationRepository.delete(reservation.get());
-        return reservation.get();
+        Reservation reservation = reservationRepository.findById(id).get();
+        reservation.setIsConfirmed(false);
+        return reservationRepository.save(reservation);
     }
 
 

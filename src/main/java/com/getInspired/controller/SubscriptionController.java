@@ -12,7 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/subscription")
@@ -34,17 +38,94 @@ public class SubscriptionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllRequestSubscription")
+    public ResponseEntity<?> getAllRequestSubscription() {
+        try {
+            List<SubscriptionDto> subscriptions = subscriptionService.getAllRequestSubscription();
+            return ResponseEntity.ok(subscriptions);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllSubscriptionAnnualy")
+    public ResponseEntity<?> getAllSubscriptionAnnualy() {
+        try {
+            List<SubscriptionDto> subscriptions = subscriptionService.getAllSubscriptionAnnualy();
+            return ResponseEntity.ok(subscriptions);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllSubscriptionMonthly")
+    public ResponseEntity<?> getAllSubscriptionMonthly() {
+        try {
+            List<SubscriptionDto> subscriptions = subscriptionService.getAllSubscriptionMonthly();
+            return ResponseEntity.ok(subscriptions);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllRequestSubscriptionByUsername/{username}")
+    public ResponseEntity<?> getAllRequestSubscriptionByUsername(@PathVariable String username) {
+        try {
+            List<SubscriptionDto> subscriptions = subscriptionService.getAllRequestSubscriptionByUsername(username);
+            if(subscriptions.isEmpty())
+            {
+                return null;
+            }
+            return ResponseEntity.ok(subscriptions);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllSubscriptionAnnualyByUsername/{username}")
+    public ResponseEntity<?> getAllSubscriptionAnnualyByUsername(@PathVariable String username) {
+        try {
+            List<SubscriptionDto> subscriptions = subscriptionService.getAllSubscriptionAnnualyByUsername(username);
+            if(subscriptions.isEmpty())
+            {
+                return null;
+            }
+            return ResponseEntity.ok(subscriptions);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllSubscriptionMonthlyByUsername/{username}")
+    public ResponseEntity<?> getAllSubscriptionMonthlyByUsername(@PathVariable String username) {
+        try {
+            List<SubscriptionDto> subscriptions = subscriptionService.getAllSubscriptionMonthlyByUsername(username);
+            if(subscriptions.isEmpty())
+            {
+                return null;
+            }
+            return ResponseEntity.ok(subscriptions);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
     @PreAuthorize("hasAuthority('MEMBRE')")
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody SubscriptionDto subscriptionDto){
-        Subscription subscription = subscriptionMapper.toEntity(subscriptionDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionMapper.toDTO(subscriptionService.saveSubscription(subscription)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionMapper.toDTO(subscriptionService.saveSubscription(subscriptionDto)));
     }
     @PreAuthorize("hasAuthority('MEMBRE')")
     @PutMapping("/renewal")
     public ResponseEntity<?> renewal(@RequestBody SubscriptionDto subscriptionDto ){
-        Subscription subscription = subscriptionMapper.toEntity(subscriptionDto);
-        return ResponseEntity.status(HttpStatus.OK).body(subscriptionMapper.toDTO(subscriptionService.saveSubscription(subscription)));
+        return ResponseEntity.status(HttpStatus.OK).body(subscriptionMapper.toDTO(subscriptionService.saveSubscription(subscriptionDto)));
     }
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/sendNotification/{id}/{notification}")
@@ -56,5 +137,25 @@ public class SubscriptionController {
     public ResponseEntity<?> confirmSubscription(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(subscriptionMapper.toDTO(subscriptionService.confirmSubscription(id)));
     }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/cancelSubscription/{id}")
+    public ResponseEntity<?> cancelSubscription(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(subscriptionMapper.toDTO(subscriptionService.cancelSubscription(id)));
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/countSubscriptionConfirmed")
+    public ResponseEntity<?> countSubscriptionConfirmed() {
+        return new ResponseEntity<>(subscriptionService.countSubscriptionConfirmed(), HttpStatus.OK);
+    }
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/count-by-type")
+    public Map<String, Long> getSubscriptionCountByType() {
+        return subscriptionService.getSubscriptionCountByType();
+    }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @DeleteMapping("/deleteSubscription/{id}")
+    public ResponseEntity<?> deleteSubscription(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(subscriptionService.deleteSubscription(id));
+    }
 }

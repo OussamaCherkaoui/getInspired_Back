@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,6 +27,16 @@ public class EventController {
     public ResponseEntity<?> getAll() {
         try {
             List<Event> events = eventService.getAllEvent();
+            return ResponseEntity.ok(eventMapper.toDTO(events));
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/getAllByDate/{date}")
+    public ResponseEntity<?> getAll(@PathVariable LocalDate date) {
+        try {
+            List<Event> events = eventService.getAllEventByDate(date);
             return ResponseEntity.ok(eventMapper.toDTO(events));
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -61,5 +72,9 @@ public class EventController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/countEvent")
+    public ResponseEntity<?> countSubscriptionConfirmed() {
+        return new ResponseEntity<>(eventService.countEvent(), HttpStatus.OK);
+    }
 }

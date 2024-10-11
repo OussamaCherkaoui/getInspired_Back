@@ -28,4 +28,12 @@ public class SubscriptionHistoryService {
     public SubscriptionHistory saveSubscriptionHistory(SubscriptionHistory subscriptionHistory) {
         return subscriptionHistoryRepository.save(subscriptionHistory);
     }
+
+    public List<SubscriptionHistory> getAllSubscriptionHistoryByIdSubscription(Long id) {
+        List<SubscriptionHistory> subscriptionHistories = subscriptionHistoryRepository.findAllBySubscription_Id(id);
+        if (subscriptionHistories.isEmpty()) {
+            throw new DatabaseEmptyException();
+        }
+        return subscriptionHistories;
+    }
 }

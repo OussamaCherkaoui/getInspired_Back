@@ -12,6 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -32,6 +35,29 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getAllByDate/{date}")
+    public ResponseEntity<?> getAllByDate(@PathVariable String date) {
+        try {
+            List<Reservation> reservations = reservationService.getAllReservationByDate(date);
+            return ResponseEntity.ok(reservationMapper.toDTO(reservations));
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/getUpcomingReservations")
+    public ResponseEntity<?> getUpcomingReservations() {
+        try {
+            List<Reservation> reservations = reservationService.UpcomingReservations();
+            return ResponseEntity.ok(reservationMapper.toDTO(reservations));
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/getAllByIdSpace/{id}")
     public ResponseEntity<?> getAllByIdSpace(@PathVariable Long id) {
@@ -42,13 +68,14 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+
     @PreAuthorize("hasAuthority('MEMBRE')")
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody ReservationDto reservationDto ){
         return ResponseEntity.status(HttpStatus.CREATED).body(reservationMapper.toDTO(reservationService.saveReservation(reservationMapper.toEntity(reservationDto))));
     }
-    @PreAuthorize("hasAuthority('MEMBRE')")
-    @DeleteMapping("/cancelReservation/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/cancelReservation/{id}")
     public ResponseEntity<?> cancelReservation(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(reservationMapper.toDTO(reservationService.cancelReservation(id)));
     }

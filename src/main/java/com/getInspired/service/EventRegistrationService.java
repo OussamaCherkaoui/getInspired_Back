@@ -1,5 +1,7 @@
 package com.getInspired.service;
 
+import com.getInspired.dto.EventRegistrationDto;
+import com.getInspired.dto.EventRegistrationReadDto;
 import com.getInspired.exception.DatabaseEmptyException;
 import com.getInspired.model.EventRegistration;
 import com.getInspired.repository.EventRegistrationRepository;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -28,17 +31,27 @@ public class EventRegistrationService {
     }
 
     public EventRegistration confirmRegistration(Long id) {
-        EventRegistration eventRegistration = eventRegistrationRepository.findById(id).get();
-        eventRegistration.setIsConfirmed(true);
-        return eventRegistrationRepository.save(eventRegistration);
+        EventRegistration registration = eventRegistrationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No registration found with id: " + id));
+
+        registration.setIsConfirmed(true);
+        return eventRegistrationRepository.save(registration);
     }
 
 
-    public List<EventRegistration> getAllEventRegistrationByIdEvent(Long id) {
-        List<EventRegistration> eventRegistrations = eventRegistrationRepository.findByEvent_Id(id);
+    public List<EventRegistrationReadDto> getAllEventRegistrationByIdEvent(Long id) {
+        List<EventRegistrationReadDto> eventRegistrations = eventRegistrationRepository.findAllByEvent_Id(id);
         if (eventRegistrations.isEmpty()) {
             throw new DatabaseEmptyException();
         }
         return eventRegistrations;
+    }
+
+    public EventRegistration cancelRegistration(Long id) {
+        EventRegistration registration = eventRegistrationRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("No registration found with id: " + id));
+
+        registration.setIsConfirmed(false);
+        return eventRegistrationRepository.save(registration);
     }
 }

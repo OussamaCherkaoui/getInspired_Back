@@ -14,16 +14,16 @@ import java.util.List;
 public interface ReservationMapper {
 
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "start_time", target = "start_time")
-    @Mapping(source = "end_time", target = "end_time")
+    @Mapping(source = "startTime", target = "start_time")
+    @Mapping(source = "endTime", target = "end_time")
     @Mapping(source = "isConfirmed", target = "isConfirmed")
     @Mapping(source = "membre.id", target = "idMembre")
     @Mapping(source = "space.id", target = "idSpace")
     ReservationDto toDTO(Reservation reservation);
 
     @Mapping(source = "id", target = "id")
-    @Mapping(source = "start_time", target = "start_time")
-    @Mapping(source = "end_time", target = "end_time")
+    @Mapping(source = "start_time", target = "startTime")
+    @Mapping(source = "end_time", target = "endTime")
     @Mapping(source = "isConfirmed", target = "isConfirmed")
     @Mapping(source = "idMembre", target = "membre.id")
     @Mapping(source = "idSpace", target = "space.id")

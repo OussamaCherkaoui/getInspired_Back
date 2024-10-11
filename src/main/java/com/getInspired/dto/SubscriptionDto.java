@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Builder
 public class SubscriptionDto {
     private Long id;
+    private String username;
     private String type;
     private LocalDate start_date;
     private LocalDate end_date;

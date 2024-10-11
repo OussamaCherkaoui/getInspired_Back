@@ -24,7 +24,6 @@ public class SpaceController {
     private final SpaceService spaceService;
     private final SpaceMapper spaceMapper;
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','MEMBRE')")
     @GetMapping("/getAll")
     public ResponseEntity<?> getAll() {
         try {
@@ -35,8 +34,8 @@ public class SpaceController {
         }
     }
     @PreAuthorize("hasAnyAuthority('ADMIN','MEMBRE')")
-    @GetMapping("/getById")
-    public ResponseEntity<?> getById(Long id){
+    @GetMapping("/getById/{id}")
+    public ResponseEntity<?> getById(@PathVariable Long id){
         try {
             Space space = spaceService.getByIdSpace(id);
             return ResponseEntity.ok(spaceMapper.toDTO(space));
@@ -49,6 +48,7 @@ public class SpaceController {
     public ResponseEntity<?> save(@RequestBody SpaceDto spaceDto ){
         return ResponseEntity.status(HttpStatus.CREATED).body(spaceMapper.toDTO(spaceService.saveSpace(spaceMapper.toEntity(spaceDto))));
     }
+
     @PreAuthorize("hasAuthority('ADMIN')")
     @PutMapping("/update")
     public ResponseEntity<?> update(@RequestBody SpaceDto spaceDto ){
@@ -75,5 +75,9 @@ public class SpaceController {
     public ResponseEntity<?> changeEtatToNotReserved(@PathVariable Long id ){
         return ResponseEntity.status(HttpStatus.OK).body(spaceMapper.toDTO(spaceService.changeEtatToNotReserved(id)));
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/countFreeSpaceForToday")
+    public ResponseEntity<?> countFreeSpaceForToday() {
+        return new ResponseEntity<>(spaceService.countFreeSpaceForToday(), HttpStatus.OK);
+    }
 }

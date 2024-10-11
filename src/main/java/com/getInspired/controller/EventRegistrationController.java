@@ -1,6 +1,7 @@
 package com.getInspired.controller;
 
 import com.getInspired.dto.EventRegistrationDto;
+import com.getInspired.dto.EventRegistrationReadDto;
 import com.getInspired.exception.DatabaseEmptyException;
 import com.getInspired.mapper.EventMapper;
 import com.getInspired.mapper.EventRegistrationMapper;
@@ -39,8 +40,8 @@ public class EventRegistrationController {
     @GetMapping("/getAllEventRegistrationByIdEvent/{id}")
     public ResponseEntity<?> getAllEventRegistrationByIdEvent(@PathVariable Long id) {
         try {
-            List<EventRegistration> eventRegistrations = eventRegistrationService.getAllEventRegistrationByIdEvent(id);
-            return ResponseEntity.ok(eventRegistrationMapper.toDTO(eventRegistrations));
+            List<EventRegistrationReadDto> eventRegistrations = eventRegistrationService.getAllEventRegistrationByIdEvent(id);
+            return ResponseEntity.ok(eventRegistrations);
         } catch (DatabaseEmptyException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -56,5 +57,9 @@ public class EventRegistrationController {
     public ResponseEntity<?> confirmRegistration(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(eventRegistrationMapper.toDTO(eventRegistrationService.confirmRegistration(id)));
     }
-
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PutMapping("/cancelRegistration/{id}")
+    public ResponseEntity<?> cancelRegistration(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(eventRegistrationMapper.toDTO(eventRegistrationService.cancelRegistration(id)));
+    }
 }

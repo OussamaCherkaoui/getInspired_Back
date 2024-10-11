@@ -51,4 +51,7 @@ public class SpaceService {
         space.setIsReserved(false);
         return spaceRepository.save(space);
     }
+    public Long countFreeSpaceForToday(){
+        return spaceRepository.countFreeSpaceForToday();
+    }
 }
