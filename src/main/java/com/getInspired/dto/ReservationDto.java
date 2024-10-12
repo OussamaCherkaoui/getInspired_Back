@@ -16,4 +16,6 @@ public class ReservationDto {
     private Boolean isConfirmed;
     private Long idMembre;
     private Long idSpace;
+    private String name;
+    private String picture;
 }

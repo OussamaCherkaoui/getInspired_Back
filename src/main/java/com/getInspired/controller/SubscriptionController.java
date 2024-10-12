@@ -153,9 +153,24 @@ public class SubscriptionController {
         return subscriptionService.getSubscriptionCountByType();
     }
 
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MEMBRE')")
     @DeleteMapping("/deleteSubscription/{id}")
     public ResponseEntity<?> deleteSubscription(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(subscriptionService.deleteSubscription(id));
+    }
+
+    @PreAuthorize("hasAuthority('MEMBRE')")
+    @GetMapping("/getAllByIdMember/{id}")
+    public ResponseEntity<?> getAllSubscriptionByIdMember(@PathVariable Long id) {
+        try {
+            List<SubscriptionDto> subscriptions = subscriptionService.getAllSubscriptionsByIdMember(id);
+            if(subscriptions.isEmpty())
+            {
+                return null;
+            }
+            return ResponseEntity.ok(subscriptions);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

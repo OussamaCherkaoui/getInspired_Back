@@ -12,10 +12,17 @@ import java.util.List;
 
 @Repository
 public interface EventRegistrationRepository extends JpaRepository<EventRegistration, Long> {
-    @Query("SELECT new com.getInspired.dto.EventRegistrationReadDto(er.id, er.isConfirmed, u.username, e.name) " +
+    @Query("SELECT new com.getInspired.dto.EventRegistrationReadDto(er.id, er.isConfirmed, m.username, e.name,e.picture,e.date) " +
             "FROM EventRegistration er " +
             "JOIN er.event e " +
-            "JOIN er.membre u " +
+            "JOIN er.membre m " +
             "WHERE e.id = :eventId")
     List<EventRegistrationReadDto> findAllByEvent_Id(@Param("eventId") Long id);
+
+    @Query("SELECT new com.getInspired.dto.EventRegistrationReadDto(er.id, er.isConfirmed, m.username, e.name,e.picture,e.date) " +
+            "FROM EventRegistration er " +
+            "JOIN er.event e " +
+            "JOIN er.membre m " +
+            "WHERE m.id = :id")
+    List<EventRegistrationReadDto> findAllByIdMember(Long id);
 }

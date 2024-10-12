@@ -1,5 +1,6 @@
 package com.getInspired.service;
 
+import com.getInspired.dto.ReservationDto;
 import com.getInspired.exception.DatabaseEmptyException;
 import com.getInspired.model.Reservation;
 import com.getInspired.repository.ReservationRepository;
@@ -71,5 +72,22 @@ public class ReservationService {
             throw new DatabaseEmptyException();
         }
         return reservations;
+    }
+
+    public List<ReservationDto> getAllReservationByIdMember(Long id) {
+        List<ReservationDto> reservations = reservationRepository.findAllByIdmember(id);
+        if (reservations.isEmpty()) {
+            throw new DatabaseEmptyException();
+        }
+        return reservations;
+    }
+
+    public Boolean deleteByid(Long id) {
+        Optional<Reservation> reservation = reservationRepository.findById(id);
+        if (reservation.isPresent()){
+            reservationRepository.delete(reservation.get());
+            return true;
+        }
+        return false;
     }
 }

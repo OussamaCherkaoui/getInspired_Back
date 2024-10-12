@@ -70,6 +70,17 @@ public class ReservationController {
     }
 
     @PreAuthorize("hasAuthority('MEMBRE')")
+    @GetMapping("/getAllByIdMember/{id}")
+    public ResponseEntity<?> getAllByIdMember(@PathVariable Long id) {
+        try {
+            List<ReservationDto> reservations = reservationService.getAllReservationByIdMember(id);
+            return ResponseEntity.ok(reservations);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('MEMBRE')")
     @PostMapping("/save")
     public ResponseEntity<?> save(@RequestBody ReservationDto reservationDto ){
         return ResponseEntity.status(HttpStatus.CREATED).body(reservationMapper.toDTO(reservationService.saveReservation(reservationMapper.toEntity(reservationDto))));
@@ -84,5 +95,12 @@ public class ReservationController {
     public ResponseEntity<?> confirmReservation(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(reservationMapper.toDTO(reservationService.confirmReservation(id)));
     }
+
+    @PreAuthorize("hasAuthority('MEMBRE')")
+    @DeleteMapping("/deleteReservation/{id}")
+    public ResponseEntity<?> deleteReservation(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(reservationService.deleteByid(id));
+    }
+
 
 }

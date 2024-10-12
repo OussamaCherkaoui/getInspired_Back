@@ -62,4 +62,22 @@ public class EventRegistrationController {
     public ResponseEntity<?> cancelRegistration(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(eventRegistrationMapper.toDTO(eventRegistrationService.cancelRegistration(id)));
     }
+
+    @PreAuthorize("hasAuthority('MEMBRE')")
+    @GetMapping("/getEventsRegistrationsByIdMember/{id}")
+    public ResponseEntity<?> getEventsRegistrationsByIdMember(@PathVariable Long id) {
+        try {
+            List<EventRegistrationReadDto> eventRegistrations = eventRegistrationService.getEventsRegistrationsByIdMember(id);
+            return ResponseEntity.ok(eventRegistrations);
+        } catch (DatabaseEmptyException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+    @PreAuthorize("hasAuthority('MEMBRE')")
+    @DeleteMapping("/deleteRegistration/{id}")
+    public ResponseEntity<?> deleteRegistration(@PathVariable Long id){
+        return ResponseEntity.status(HttpStatus.OK).body(eventRegistrationService.deleteRegistration(id));
+    }
+
 }

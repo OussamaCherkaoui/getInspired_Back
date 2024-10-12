@@ -150,4 +150,12 @@ public class SubscriptionService {
         }
         return false;
     }
+
+    public List<SubscriptionDto> getAllSubscriptionsByIdMember(Long id) {
+        List<Subscription> subscriptions = subscriptionRepository.findByMembre_Id(id);
+        if (subscriptions.isEmpty()) {
+            throw new DatabaseEmptyException();
+        }
+        return subscriptionMapper.toDTO(subscriptions);
+    }
 }

@@ -53,5 +53,6 @@ public interface SubscriptionRepository  extends JpaRepository<Subscription, Lon
     List<SubscriptionDto> findAllSubscriptionMonthlyByUsername(String username);
 
 
+    List<Subscription> findByMembre_Id(Long id);
 
 }
